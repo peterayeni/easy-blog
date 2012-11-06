@@ -14,9 +14,11 @@ from django.core.cache import cache
 from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
 from django.utils.text import truncate_words
-from django.utils.timezone import now
+try:
+    from django.utils.timezone import now
+except ImportError:
+    from easy_blog.utils import now
 from django.utils.translation import ugettext, ugettext_lazy as _
-
 from django_markup.fields import MarkupField
 from django_markup.markup import formatter
 from inline_media.fields import TextFieldWithInlines

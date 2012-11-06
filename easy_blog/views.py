@@ -7,7 +7,10 @@ from django.db.models import F, Q
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render_to_response as render
 from django.template import RequestContext
-from django.utils.timezone import now
+try:
+    from django.utils.timezone import now
+except ImportError:
+    from easy_blog.utils import now
 from django.utils.translation import ugettext as _
 from django.views.generic import View, ListView, DateDetailView, RedirectView
 from django.views.generic.dates import (_date_from_string, _date_lookup_for_field,

@@ -1,7 +1,7 @@
 # borrowed from django-sugar by Kevin Fricovsky:
 # https://github.com/montylounge/django-sugar
 
-import datetime
+from datetime import datetime, timedelta, tzinfo
 import re
 
 try:
@@ -9,13 +9,20 @@ try:
 except ImportError:
     import md5
 
+try:
+    import pytz
+except ImportError:
+    pytz = None
 
 from django.db.models.manager import Manager
 from django.conf import settings
 from django.utils import formats
 from django.utils.dateformat import format
 from django.utils.encoding import smart_str
-from django.utils.timezone import now
+try:
+    from django.utils.timezone import now
+except ImportError:
+    pass
 from django.utils.translation import ungettext, ugettext
 
 
@@ -85,8 +92,8 @@ def create_cache_key(klass, field=None, field_value=None):
 
 
 def colloquial_date(d, fmt):
-    if not isinstance(d, datetime.datetime):
-        d = datetime.datetime(d.year, d.month, d.day)
+    if not isinstance(d, datetime):
+        d = datetime(d.year, d.month, d.day)
     delta = (now() - d)
     since = delta.days
     if since <= 0:
@@ -103,3 +110,39 @@ def colloquial_date(d, fmt):
             return format(d, fmt)
         except AttributeError:
             return ''
+
+
+ZERO = timedelta(0)
+
+class UTC(tzinfo):
+    """
+    UTC implementation taken from Python's docs.
+
+    Used only when pytz isn't available.
+    """
+
+    def __repr__(self):
+        return "<UTC>"
+
+    def utcoffset(self, dt):
+        return ZERO
+
+    def tzname(self, dt):
+        return "UTC"
+
+    def dst(self, dt):
+        return ZERO
+
+
+utc = pytz.utc if pytz else UTC()
+
+
+def now():
+    """
+    Returns an aware or naive datetime.datetime, depending on settings.USE_TZ.
+    """
+    if getattr(settings, "USE_TZ", False):
+        # timeit shows that datetime.now(tz=utc) is 24% slower
+        return datetime.utcnow().replace(tzinfo=utc)
+    else:
+        return datetime.now()
