@@ -1,0 +1,26 @@
+{% load i18n stories %}
+
+{% if user.is_authenticated %}
+{% get_review_stories 10 as review_stories %}
+{% get_draft_stories 10 as draft_stories %}
+{% if review_stories or draft_stories %}
+<div class="alert alert-info">
+  <a class="close" data-dismiss="alert" href="#">&times;</a>
+  <div id="admin-block">
+    {% if review_stories %}
+    <h6>{% trans "Stories in review" %}:</h6>
+    {% for item in review_stories %}
+    {% include "easy_blog/includes/unpublished_headline.html" with object=item show_author=1 %}
+    {% endfor %}
+    {% endif %}
+
+    {% if draft_stories %}
+    <h6>{% trans "Your draft stories" %}:</h6>
+    {% for item in draft_stories %}
+    {% include "easy_blog/includes/unpublished_headline.html" with object=item %}
+    {% endfor %}
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+{% endif %}

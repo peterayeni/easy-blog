@@ -1,0 +1,70 @@
+{% extends "easy_blog/base.html" %}
+{% load i18n stories archive comments_xtd %}
+{% load url from future %}
+
+{% block extracss %}
+<link rel="stylesheet" href="{{ STATIC_URL }}inline_media/css/inline_media.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ STATIC_URL }}prettyphoto-3.1.3/css/prettyPhoto.css" type="text/css" media="screen" charset="utf-8" />
+{% endblock %}
+
+{% block extrajs %}
+<script type="text/javascript" src="{{ STATIC_URL }}inline_media/js/inline_media.js"></script>
+<script src="{{ STATIC_URL }}prettyphoto-3.1.3/js/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row mt15">
+  <div id="timeline" class="span8">
+    {% if object_list %}
+    {% for object in object_list %}
+    {% if forloop.first and not page_obj.has_previous %}
+    {% include "easy_blog/includes/full_story_timeline.html" %}
+    {% else %}
+    {% include "easy_blog/includes/story_timeline.html" with truncate_to=44 %}
+    {% endif %}
+    {% endfor %}
+    {% else %}
+    <h6>{% trans "no story nor quote yet" %}</h6>
+    {% endif %}
+    
+    <ul class="pager">
+      {% if page_obj.has_previous %}
+      <li><a id="prev" href="?page={{ page_obj.previous_page_number }}">{% trans "previous" %}</a></li>
+      {% endif %}
+      {% if page_obj.has_next %}
+      <li><a id="next" href="?page={{ page_obj.next_page_number }}">{% trans "next" %}</a></li>
+      {% endif %}
+    </ul>
+  </div>
+  
+  <div class="span4">
+    {% include "easy_blog/includes/admin_block.html" %}
+  
+    <div class="pstd pattern">
+      {% get_xtdcomment_count as comment_count for easy_blog.story %}
+      {% if comment_count %}
+      <div class="mb15">
+	<H6 class="mb5"><span class="heydings-common-icon">b</span>&nbsp;&nbsp;{% trans "Latest comments" %}</H6>
+	{% render_last_xtdcomments easy_blog_config.comments_in_index for easy_blog.story using "comments/easy_blog/comment_mini.html" %}
+      </div>
+      {% endif %}
+      
+      {% get_popular_stories 3 as popular_stories %}
+      {% if popular_stories %}
+      <div class="mb15">
+	<H6><span class="heydings-common-icon">D</span>&nbsp;{% trans "Popular stories" %}</H6>
+	<ul>
+	  {% for story in popular_stories %}
+	  <li><a href="{{ story.get_absolute_url }}">{{ story.title }}</a></li>
+	  {% endfor %}
+	</ul>
+      </div>
+      {% endif %}
+  
+      <div>
+	{% include "easy_blog/includes/subscribe_block.html" %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

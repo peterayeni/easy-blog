@@ -1,0 +1,64 @@
+#-*- coding: utf-8 -*-
+
+from django import forms
+from django.contrib import admin
+
+from inline_media.admin import AdminTextFieldWithInlinesMixin
+from inline_media.widgets import TextareaWithInlines
+
+from easy_blog.models import Config, Story
+
+
+class ConfigAdmin(admin.ModelAdmin):
+    fieldsets = ((None, {"fields": (("site", "title"), 
+                                    ("show_author", "ping_google"),
+                                    "email_subscribe_url", "excerpt_length", 
+                                    "stories_in_index", "comments_in_index")}),
+                 ("META", {"fields": ("meta_author", "meta_description",
+                                      "meta_keywords", )}),)
+
+admin.site.register(Config, ConfigAdmin)
+
+class StoryAdmin(AdminTextFieldWithInlinesMixin, admin.ModelAdmin):
+    list_display  = ("title", "pub_date", "author", "status", "visits")
+    list_filter   = ("author", "status", "pub_date", "tags")
+    search_fields = ("title", "abstract", "body")
+    prepopulated_fields = {"slug": ("title",)}
+    fieldsets = ((None, {"fields": ("title", "slug",  
+                                    "markup", "abstract", "body",)}),
+                 ("Post data", {"fields": (("author", "status"), 
+                                           ("allow_comments", "tags"),
+                                           ("pub_date", "mod_date")),}),
+                 ("Converted markup", {"classes": ("collapse",),
+                                       "fields": ("abstract_markup", 
+                                                  "body_markup",),}),)
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        field = super(StoryAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs) # get the default field
+        
+        from django import forms
+        from django.contrib.auth import models
+
+        if db_field.name == "author":
+            queryset = models.User.objects.all()
+            field = forms.ModelChoiceField(queryset=queryset, 
+                                           initial=self.current_user.id)
+
+        return field
+
+    def get_form(self, req, obj=None, **kwargs):
+        # save the currently logged in user for later
+        self.current_user = req.user
+        return super(StoryAdmin, self).get_form(req, obj, **kwargs)
+
+    def has_change_permission(self, request, obj=None):
+        if not obj or request.user.is_superuser:
+            return True
+        if obj.author == request.user:
+            return True
+        if obj.status == 2 and request.user.has_perm("easy_blog.can_review_stories"):
+            return True
+        return False
+        
+admin.site.register(Story, StoryAdmin)

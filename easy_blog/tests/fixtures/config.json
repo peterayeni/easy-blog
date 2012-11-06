@@ -1,0 +1,19 @@
+[
+    {
+        "pk": 1,
+        "model": "easy_blog.config",
+        "fields": {
+            "meta_description": "Here goes the blog description.",
+            "meta_keywords": "comma, separated, list, of, the, blog, keywords",
+            "excerpt_length": 500,
+            "title": "Your Easy Blog",
+            "meta_author": "Our Project's Blog",
+            "show_author": true,
+            "site": 1,
+            "stories_in_index": 5,
+            "comments_in_index": 2,
+            "ping_google": false,
+            "email_subscribe_url": ""
+        }
+    }
+]
