@@ -97,7 +97,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'request.middleware.RequestMiddleware',
 )
 
 ROOT_URLCONF = "urls"
@@ -123,7 +122,6 @@ INSTALLED_APPS = (
     "flatblocks",
     "sorl.thumbnail",
     "tagging",
-    "request",
     "easy_blog",
     "haystack",
     "south",
@@ -206,16 +204,6 @@ handler.setLevel(logging.ERROR)
 logging.getLogger("sorl.thumbnail").addHandler(handler)
 
 EASY_BLOG_PAGINATE_BY = 10
-
-REQUEST_IGNORE_AJAX = True
-REQUEST_IGNORE_USERNAME = ["admin"]
-REQUEST_IGNORE_PATHS = (r'^admin/', r'^favicon.ico')
-REQUEST_TRAFFIC_MODULES = (
-    'request.traffic.UniqueVisitor',
-    'request.traffic.UniqueVisit',
-    'request.traffic.Hit',
-    'request.traffic.Search',
-)
 
 HAYSTACK_CONNECTIONS = {
     'default': {

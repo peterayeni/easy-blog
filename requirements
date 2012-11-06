@@ -10,7 +10,6 @@ docutils
 -e git+git://github.com/danirus/django-comments-xtd.git#egg=django-comments-xtd
 -e git+git://github.com/danirus/django-inline-media.git#egg=django-inline-media
 -e git+git://github.com/zerok/django-flatblocks.git#egg=django-flatblocks
--e git+git://github.com/kylef/django-request.git#egg=django-request
 -e git+git://github.com/toastdriven/django-haystack.git@master#egg=django-haystack
 -e git+git://github.com/notanumber/xapian-haystack.git#egg=xapian-haystack
 -e git+git://github.com/sorl/sorl-thumbnail.git#egg=sorl-thumbnail
