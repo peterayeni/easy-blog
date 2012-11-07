@@ -3,7 +3,10 @@
 from django import template
 from django.conf import settings
 from django.db import models
-from django.utils.timezone import now
+try:
+    from django.utils.timezone import now
+except ImportError:
+    from easy_blog.utils import now
 
 import re
 
