@@ -19,12 +19,11 @@ try:
 except ImportError:
     from easy_blog.utils import now
 from django.utils.translation import ugettext, ugettext_lazy as _
-from django_markup.fields import MarkupField
-from django_markup.markup import formatter
 from inline_media.fields import TextFieldWithInlines
 from tagging.fields import TagField
 from tagging.models import TaggedItem
 from tagging.utils import get_tag_list
+from wysihtml5.fields import Wysihtml5TextField
 
 from easy_blog.utils import create_cache_key, colloquial_date
 
@@ -137,11 +136,8 @@ class Story(models.Model):
     """A generic story."""
     title           = models.CharField(max_length=200)
     slug            = models.SlugField(unique_for_date="pub_date")
-    markup          = MarkupField(default="markdown")
-    abstract        = TextFieldWithInlines()
-    abstract_markup = models.TextField(editable=True, blank=True, null=True)
-    body            = TextFieldWithInlines()
-    body_markup     = models.TextField(editable=True, blank=True, null=True)
+    abstract        = Wysihtml5TextField()
+    body            = Wysihtml5TextField()
     tags            = TagField()
     status          = models.IntegerField(choices=STATUS_CHOICES, default=1)
     author          = models.ForeignKey(User, blank=True, null=True)
@@ -158,18 +154,14 @@ class Story(models.Model):
         db_table  = "easy_blog_stories"
         ordering  = ("-pub_date",)
         get_latest_by = "pub_date"
-        permissions = ((_("can_review_stories"), _("Can review stories")),
-                       (_("can_see_unpublished_stories"), _("Can see unpublished stories")))
+        permissions = (("can_review_stories", "Can review stories"),
+                       ("can_see_unpublished_stories", "Can see unpublished stories"))
 
     def __unicode__(self):
         return u"%s" % self.title
 
     def save(self, *args, **kwargs):
-        self.site_id      = settings.SITE_ID
-        self.abstract_markup = mark_safe(
-            formatter(self.abstract, filter_name=self.markup))
-        self.body_markup = mark_safe(
-            formatter(self.body, filter_name=self.markup))
+        self.site_id = settings.SITE_ID
         super(Story, self).save(*args, **kwargs)
         if self.status == 3: # public
             blog_config = Config.get_current()

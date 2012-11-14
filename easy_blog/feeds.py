@@ -35,7 +35,7 @@ class LatestStoriesFeed(Feed):
 
     def item_description(self, item):
         child = getattr(item, item.content_type.model)
-        return inlines(child.body_markup)
+        return inlines(child.body)
 
     def item_author_name(self, item):
         child = getattr(item, item.content_type.model)
@@ -102,7 +102,7 @@ class PostsByTag(Feed):
         return item.object.get_absolute_url()
 
     def item_description(self, item):
-        return inlines(item.object.body_markup)
+        return inlines(item.object.body)
 
     def item_author_name(self, item):
         return item.object.author.get_full_name()       

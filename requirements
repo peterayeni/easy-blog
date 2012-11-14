@@ -13,3 +13,4 @@ docutils
 -e git+git://github.com/toastdriven/django-haystack.git@master#egg=django-haystack
 -e git+git://github.com/notanumber/xapian-haystack.git#egg=xapian-haystack
 -e git+git://github.com/sorl/sorl-thumbnail.git#egg=sorl-thumbnail
+-e git+git://github.com/danirus/django-wysihtml5.git#egg=django-wysihtml5

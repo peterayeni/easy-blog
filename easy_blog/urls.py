@@ -43,6 +43,8 @@ urlpatterns = patterns("",
 
     url(r"^unpublished-on/$", views.show_unpublished, name="blog-unpublished-on"),
     url(r"^unpublished-off/$", views.hide_unpublished, name="blog-unpublished-off"),
+
+    url(r'^inline-media/', include('inline_media.urls')),
 )
 
 #-- sitemaps ------------------------------------------------------------------

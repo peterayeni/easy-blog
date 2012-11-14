@@ -3,8 +3,7 @@
 from django import forms
 from django.contrib import admin
 
-from inline_media.admin import AdminTextFieldWithInlinesMixin
-from inline_media.widgets import TextareaWithInlines
+from wysihtml5.admin import AdminWysihtml5TextFieldMixin
 
 from easy_blog.models import Config, Story
 
@@ -19,19 +18,16 @@ class ConfigAdmin(admin.ModelAdmin):
 
 admin.site.register(Config, ConfigAdmin)
 
-class StoryAdmin(AdminTextFieldWithInlinesMixin, admin.ModelAdmin):
+class StoryAdmin(AdminWysihtml5TextFieldMixin, admin.ModelAdmin):
     list_display  = ("title", "pub_date", "author", "status", "visits")
     list_filter   = ("author", "status", "pub_date", "tags")
     search_fields = ("title", "abstract", "body")
     prepopulated_fields = {"slug": ("title",)}
     fieldsets = ((None, {"fields": ("title", "slug",  
-                                    "markup", "abstract", "body",)}),
+                                    "abstract", "body",)}),
                  ("Post data", {"fields": (("author", "status"), 
                                            ("allow_comments", "tags"),
-                                           ("pub_date", "mod_date")),}),
-                 ("Converted markup", {"classes": ("collapse",),
-                                       "fields": ("abstract_markup", 
-                                                  "body_markup",),}),)
+                                           ("pub_date", "mod_date")),}),)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         field = super(StoryAdmin, self).formfield_for_dbfield(
@@ -57,7 +53,8 @@ class StoryAdmin(AdminTextFieldWithInlinesMixin, admin.ModelAdmin):
             return True
         if obj.author == request.user:
             return True
-        if obj.status == 2 and request.user.has_perm("easy_blog.can_review_stories"):
+        if (obj.status in [2, 3] and # stories in review or published
+            request.user.has_perm("easy_blog.can_review_stories")):
             return True
         return False
         
