@@ -31,9 +31,7 @@ def simple_story_dict(user):
     return {
         'title': "Short title for a testing story",
         'slug': "short-title-for-testing-story",
-        'markup': "markdown",
-        'body': "This is a [link](http://www.mobilevikings.com) written\
- in Markdown to Mobile Vikings website", 
+        'body': "This is a the body of the story.",
         'tags': "mobile vikings",
         'author': user,
         'allow_comments': True,

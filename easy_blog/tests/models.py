@@ -20,19 +20,17 @@ class StoryTestCase(DjangoTestCase):
         self.kwargs = {
             'title': "Short title for a testing story",
             'slug': "short-title-for-testing-story",
-            'markup': "markdown",
-            'body': "This is a [link](http://www.mobilevikings.com) written\
- in Markdown to Mobile Vikings website", 
+            'body': "This is the content of the story.", 
             'tags': "mobile vikings",
             'author': User.objects.get(username="admin"),
             'allow_comments': True,
             'site': Config.get_current().site }
         self.tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         
-    def test_body_markup_has_content(self):
+    def test_body_has_content(self):
         story = Story.objects.create(status=1, pub_date=self.tomorrow, 
                                      mod_date=self.tomorrow, **self.kwargs)
-        self.assert_(len(story.body_markup) > 0)
+        self.assert_(len(story.body) > 0)
 
     def test_get_draft_absolute_url(self):
         story = Story.objects.create(status=1, pub_date=self.tomorrow, 

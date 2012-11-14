@@ -17,11 +17,11 @@ class StoryTestCase(DjangoTestCase):
     def setUp(self):
         self.kwargs = simple_story_dict(User.objects.get(username="admin"))
         
-    def test_body_markup_has_content(self):
+    def test_body_has_content(self):
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
         story = Story.objects.create(status=1, pub_date=tomorrow, 
                                      mod_date=tomorrow, **self.kwargs)
-        self.assert_(len(story.body_markup) > 0)
+        self.assert_(len(story.body) > 0)
 
     def test_get_draft_absolute_url(self):
         tomorrow = datetime.datetime.now() + datetime.timedelta(days=1)
