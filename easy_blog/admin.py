@@ -4,6 +4,7 @@ from django import forms
 from django.contrib import admin
 
 from wysihtml5.admin import AdminWysihtml5TextFieldMixin
+from wysihtml5.widgets import Wysihtml5AdminTextareaWidget
 
 from easy_blog.models import Config, Story
 
@@ -30,6 +31,15 @@ class StoryAdmin(AdminWysihtml5TextFieldMixin, admin.ModelAdmin):
                                            ("allow_comments", "tags"),
                                            ("pub_date", "mod_date")),}),)
     raw_id_fields = ("author",)
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        field = super(StoryAdmin, self).formfield_for_dbfield(
+            db_field, **kwargs)
+        if db_field.name == "abstract":
+            field = forms.CharField(
+                widget=Wysihtml5AdminTextareaWidget(attrs={"rows":6}))
+        return field
+        
 
     def has_change_permission(self, request, obj=None):
         if not obj or request.user.is_superuser:
