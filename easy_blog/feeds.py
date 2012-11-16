@@ -26,20 +26,16 @@ class LatestStoriesFeed(Feed):
         return item.pub_date
 
     def item_title(self, item):
-        child = getattr(item, item.content_type.model)
-        return child.title
+        return item.title
 
     def item_link(self, item):
-        child = getattr(item, item.content_type.model)
-        return child.get_absolute_url()
+        return item.get_absolute_url()
 
     def item_description(self, item):
-        child = getattr(item, item.content_type.model)
-        return inlines(child.body)
+        return inlines(item.body)
 
     def item_author_name(self, item):
-        child = getattr(item, item.content_type.model)
-        return child.author.get_full_name()       
+        return item.author.get_full_name()       
 
     def title(self):
         return '%s stories feed' % self.config.title
