@@ -18,35 +18,18 @@ class ConfigAdmin(admin.ModelAdmin):
 
 admin.site.register(Config, ConfigAdmin)
 
-class StoryAdmin(AdminWysihtml5TextFieldMixin, admin.ModelAdmin):
+
+class StoryAdmin(admin.ModelAdmin, AdminWysihtml5TextFieldMixin):
     list_display  = ("title", "pub_date", "author", "status", "visits")
     list_filter   = ("author", "status", "pub_date", "tags")
     search_fields = ("title", "abstract", "body")
     prepopulated_fields = {"slug": ("title",)}
-    fieldsets = ((None, {"fields": ("title", "slug",  
+    fieldsets = ((None, {"fields": ("title", "slug",
                                     "abstract", "body",)}),
                  ("Post data", {"fields": (("author", "status"), 
                                            ("allow_comments", "tags"),
                                            ("pub_date", "mod_date")),}),)
-
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        field = super(StoryAdmin, self).formfield_for_dbfield(
-            db_field, **kwargs) # get the default field
-        
-        from django import forms
-        from django.contrib.auth import models
-
-        if db_field.name == "author":
-            queryset = models.User.objects.all()
-            field = forms.ModelChoiceField(queryset=queryset, 
-                                           initial=self.current_user.id)
-
-        return field
-
-    def get_form(self, req, obj=None, **kwargs):
-        # save the currently logged in user for later
-        self.current_user = req.user
-        return super(StoryAdmin, self).get_form(req, obj, **kwargs)
+    raw_id_fields = ("author",)
 
     def has_change_permission(self, request, obj=None):
         if not obj or request.user.is_superuser:
