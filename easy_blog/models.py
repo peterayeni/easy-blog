@@ -145,7 +145,7 @@ class Story(models.Model):
     pub_date        = models.DateTimeField(default=now)
     mod_date        = models.DateTimeField(default=now)
     visits          = models.IntegerField(default=0, editable=False)
-    site            = models.ForeignKey(Site)
+    site            = models.ForeignKey(Site, verbose_name=_("Site in which the entry is published"))
     objects         = StoryManager()
 
     class Meta:

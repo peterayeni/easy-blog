@@ -26,7 +26,7 @@ class StoryAdmin(admin.ModelAdmin, AdminWysihtml5TextFieldMixin):
     prepopulated_fields = {"slug": ("title",)}
     fieldsets = ((None, {"fields": ("title", "slug",
                                     "abstract", "body",)}),
-                 ("Post data", {"fields": (("author", "status"), 
+                 ("Post data", {"fields": (("site", "author", "status"), 
                                            ("allow_comments", "tags"),
                                            ("pub_date", "mod_date")),}),)
     raw_id_fields = ("author",)
