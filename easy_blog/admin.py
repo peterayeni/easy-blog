@@ -19,7 +19,7 @@ class ConfigAdmin(admin.ModelAdmin):
 admin.site.register(Config, ConfigAdmin)
 
 
-class StoryAdmin(admin.ModelAdmin, AdminWysihtml5TextFieldMixin):
+class StoryAdmin(AdminWysihtml5TextFieldMixin, admin.ModelAdmin):
     list_display  = ("title", "pub_date", "author", "status", "visits")
     list_filter   = ("author", "status", "pub_date", "tags")
     search_fields = ("title", "abstract", "body")
