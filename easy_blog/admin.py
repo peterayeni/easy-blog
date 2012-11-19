@@ -8,6 +8,12 @@ from wysihtml5.widgets import Wysihtml5AdminTextareaWidget
 
 from easy_blog.models import Config, Story
 
+try:
+    from easy_blog.filters import BlogAuthorsListFilter
+    story_admin_list_filter = (BlogAuthorsListFilter, "status", "pub_date")
+except:
+    story_admin_list_filter = ("status", "pub_date")
+
 
 class ConfigAdmin(admin.ModelAdmin):
     fieldsets = ((None, {"fields": (("site", "title"), 
@@ -22,7 +28,7 @@ admin.site.register(Config, ConfigAdmin)
 
 class StoryAdmin(AdminWysihtml5TextFieldMixin, admin.ModelAdmin):
     list_display  = ("title", "pub_date", "author", "status", "visits")
-    list_filter   = ("author", "status", "pub_date", "tags")
+    list_filter   = story_admin_list_filter
     search_fields = ("title", "abstract", "body")
     prepopulated_fields = {"slug": ("title",)}
     fieldsets = ((None, {"fields": ("title", "slug",
@@ -50,5 +56,5 @@ class StoryAdmin(AdminWysihtml5TextFieldMixin, admin.ModelAdmin):
             request.user.has_perm("easy_blog.can_review_stories")):
             return True
         return False
-        
+      
 admin.site.register(Story, StoryAdmin)

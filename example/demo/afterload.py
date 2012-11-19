@@ -39,16 +39,21 @@ def setup_users():
     """
     story_ct = ContentType.objects.filter(app_label="easy_blog", model="story")
     can_review_per = Permission.objects.get(content_type=story_ct, codename="can_review_stories")
-    can_see_unpub_per = Permission.objects.get(content_type=story_ct, codename="can_see_unpublished_stories")
     admin = User.objects.get(username="admin")
     alice = User.objects.get(username="alice")
     bob = User.objects.get(username="bob")
+    # blog authors group
     blog_authors_grp = Group.objects.create(name="Blog Authors")
-    blog_authors_grp.permissions.add(can_see_unpub_per)
+    for per in Permission.objects.filter(content_type=story_ct):
+        if per != can_review_per:
+            blog_authors_grp.permissions.add(per)
     blog_authors_grp.user_set.add(admin, alice, bob)
-    alice.user_permissions.add(can_review_per)
     blog_authors_grp.save()
-    alice.save()
+    # blog reviewers group
+    blog_reviewers_grp = Group.objects.create(name="Blog Reviewers")
+    blog_reviewers_grp.permissions.add(can_review_per)
+    blog_reviewers_grp.user_set.add(alice)
+    blog_reviewers_grp.save()
 
 
 def fix_content_types():
