@@ -28,6 +28,8 @@ class HomepageView(ListView):
     template_name = "easy_blog/homepage.html"
 
     def get_paginate_by(self, queryset):
+        # config = Config.get_current()
+        # return config.stories_in_index if config else 5
         return Config.get_current().stories_in_index
 
     def get_queryset(self):

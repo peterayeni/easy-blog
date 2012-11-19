@@ -21,8 +21,6 @@ Features:
 7. Multiple Authors.
 8. Search capabilities with `django-haystack <http://packages.python.org/django-haystack/>`_, and more.
 
-.. image:: images/cover.png
-
 Run the demo project to see django-easy-blog in action.
 
 Contents:

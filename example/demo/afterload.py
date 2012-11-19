@@ -29,6 +29,7 @@ from django_comments_xtd.models import XtdComment
 from sorl.thumbnail import get_thumbnail
 from inline_media.models import Picture 
 
+from easy_blog.auth import initialize_groups
 
 def setup_users():
     """Create the 'Blog Authors' group, assign 'Can review stories' to alice.
@@ -37,21 +38,22 @@ def setup_users():
     All them belong to 'Blog Authors' group.
     Alice has extra rights: she has 'can_review_stories' permission.
     """
-    story_ct = ContentType.objects.filter(app_label="easy_blog", model="story")
-    can_review_per = Permission.objects.get(content_type=story_ct, codename="can_review_stories")
+    # story_ct = ContentType.objects.filter(app_label="easy_blog", model="story")
+    # can_review_per = Permission.objects.get(content_type=story_ct, codename="can_review_stories")
+    blog_authors_grp, blog_reviewers_grp = initialize_groups()
     admin = User.objects.get(username="admin")
     alice = User.objects.get(username="alice")
     bob = User.objects.get(username="bob")
     # blog authors group
-    blog_authors_grp = Group.objects.create(name="Blog Authors")
-    for per in Permission.objects.filter(content_type=story_ct):
-        if per != can_review_per:
-            blog_authors_grp.permissions.add(per)
+    # blog_authors_grp = Group.objects.create(name="Blog Authors")
+    # for per in Permission.objects.filter(content_type=story_ct):
+    #     if per != can_review_per:
+    #         blog_authors_grp.permissions.add(per)
     blog_authors_grp.user_set.add(admin, alice, bob)
     blog_authors_grp.save()
     # blog reviewers group
-    blog_reviewers_grp = Group.objects.create(name="Blog Reviewers")
-    blog_reviewers_grp.permissions.add(can_review_per)
+    # blog_reviewers_grp = Group.objects.create(name="Blog Reviewers")
+    # blog_reviewers_grp.permissions.add(can_review_per)
     blog_reviewers_grp.user_set.add(alice)
     blog_reviewers_grp.save()
 

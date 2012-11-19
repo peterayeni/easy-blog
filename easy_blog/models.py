@@ -28,6 +28,32 @@ from wysihtml5.fields import Wysihtml5TextField
 from easy_blog.utils import create_cache_key, colloquial_date
 
 
+class DefaultConfig(object):
+    def __init__(self, data=None):
+        self.data = data
+    def __getattr__(self, name):
+        try:
+            return self.data[name]
+        except KeyError:
+            return None
+        
+
+default_config = DefaultConfig(
+    getattr(
+        settings, "EASY_BLOG_DEFAULT_CONFIG", 
+        { "site": 1,
+          "title": u"Your Easy Blog",
+          "stories_in_index": 5,
+          "comments_in_index": 2,
+          "email_subscribe_url": u"",
+          "show_author": True,
+          "ping_google": False,
+          "excerpt_length": 500,
+          "meta_author": u"",
+          "meta_keywords": u"",
+          "meta_description": u""}))
+                               
+
 STATUS_CHOICES = ((1, _("Draft")), (2, _("Review")), (3, _("Public")),)
 
 
@@ -87,7 +113,7 @@ class Config(models.Model):
                 config = Config.objects.get(site=site)
                 cache.add(key, config)
             except Config.DoesNotExist:
-                return None
+                return default_config
         return config
 
 
