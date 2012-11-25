@@ -55,7 +55,9 @@ def hide_unpublished(request):
 
 
 class StoryDetailView(DateDetailView):
-    model = Story
+    def get_queryset(self):
+        return self.model.objects.published()
+        
     def get_object(self, *args, **kwargs):
         qs = super(DateDetailView, self).get_object(*args, **kwargs)
         if qs.status > 2 and not qs.in_the_future:

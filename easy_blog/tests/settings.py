@@ -89,7 +89,6 @@ INSTALLED_APPS = [
     "flatblocks",
     "sorl.thumbnail",
     "tagging",
-    "request",
     "easy_blog",
     'easy_blog.tests',
 ]

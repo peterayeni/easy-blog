@@ -27,7 +27,8 @@ admin.site.register(Config, ConfigAdmin)
 
 
 class StoryAdmin(AdminWysihtml5TextFieldMixin, admin.ModelAdmin):
-    list_display  = ("title", "pub_date", "author", "status", "visits")
+    list_display  = ("title", "pub_date", "mod_date", 
+                     "author", "status", "visits")
     list_filter   = story_admin_list_filter
     search_fields = ("title", "abstract", "body")
     prepopulated_fields = {"slug": ("title",)}
@@ -35,7 +36,7 @@ class StoryAdmin(AdminWysihtml5TextFieldMixin, admin.ModelAdmin):
                                     "abstract", "body",)}),
                  ("Post data", {"fields": (("site", "author", "status"), 
                                            ("allow_comments", "tags"),
-                                           ("pub_date", "mod_date")),}),)
+                                           ("pub_date",)),}),)
     raw_id_fields = ("author",)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
