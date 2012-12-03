@@ -30,9 +30,9 @@
   </header>
   <section class="abstract">
     {% if truncate_to %}
-    {{ object.abstract|safe|truncatewords_html:truncate_to }}
+    {{ object.abstract_markup|render_inlines|safe|truncatewords_html:truncate_to }}
     {% else %}
-    {{ object.abstract|safe|truncatewords_html:44 }}
+    {{ object.abstract_markup|render_inlines|safe|truncatewords_html:44 }}
     {% endif %}
   </section>
 </article>

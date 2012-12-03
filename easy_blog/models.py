@@ -19,11 +19,13 @@ try:
 except ImportError:
     from easy_blog.utils import now
 from django.utils.translation import ugettext, ugettext_lazy as _
+
+from django_markup.fields import MarkupField
+from django_markup.markup import formatter
 from inline_media.fields import TextFieldWithInlines
 from tagging.fields import TagField
 from tagging.models import TaggedItem
 from tagging.utils import get_tag_list
-from wysihtml5.fields import Wysihtml5TextField
 
 from easy_blog.utils import create_cache_key, colloquial_date
 
@@ -162,8 +164,11 @@ class Story(models.Model):
     """A generic story."""
     title           = models.CharField(max_length=200)
     slug            = models.SlugField(unique_for_date="pub_date")
-    abstract        = Wysihtml5TextField()
-    body            = Wysihtml5TextField()
+    markup          = MarkupField(default="markdown")
+    abstract        = TextFieldWithInlines()
+    abstract_markup = models.TextField(editable=True, blank=True, null=True)
+    body            = TextFieldWithInlines()
+    body_markup     = models.TextField(editable=True, blank=True, null=True)
     tags            = TagField()
     status          = models.IntegerField(choices=STATUS_CHOICES, default=1)
     author          = models.ForeignKey(User, blank=True, null=True)
@@ -188,6 +193,10 @@ class Story(models.Model):
 
     def save(self, *args, **kwargs):
         self.site_id = settings.SITE_ID
+        self.abstract_markup = mark_safe(
+            formatter(self.abstract, filter_name=self.markup))
+        self.body_markup = mark_safe(
+            formatter(self.body, filter_name=self.markup))
         super(Story, self).save(*args, **kwargs)
         if self.status == 3: # public
             blog_config = Config.get_current()

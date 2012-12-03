@@ -3,8 +3,8 @@
 from django import forms
 from django.contrib import admin
 
-from wysihtml5.admin import AdminWysihtml5TextFieldMixin
-from wysihtml5.widgets import Wysihtml5AdminTextareaWidget
+from inline_media.admin import AdminTextFieldWithInlinesMixin
+from inline_media.widgets import TextareaWithInlines
 
 from easy_blog.models import Config, Story
 
@@ -26,7 +26,7 @@ class ConfigAdmin(admin.ModelAdmin):
 admin.site.register(Config, ConfigAdmin)
 
 
-class StoryAdmin(AdminWysihtml5TextFieldMixin, admin.ModelAdmin):
+class StoryAdmin(AdminTextFieldWithInlinesMixin, admin.ModelAdmin):
     list_display  = ("title", "pub_date", "mod_date", 
                      "author", "status", "visits")
     list_filter   = story_admin_list_filter
@@ -36,17 +36,17 @@ class StoryAdmin(AdminWysihtml5TextFieldMixin, admin.ModelAdmin):
                                     "abstract", "body",)}),
                  ("Post data", {"fields": (("site", "author", "status"), 
                                            ("allow_comments", "tags"),
-                                           ("pub_date",)),}),)
+                                           ("pub_date",)),}),
+                 ("Converted markup", {"classes": ("collapse",),
+                                       "fields": ("abstract_markup", 
+                                                  "body_markup",),}),)
     raw_id_fields = ("author",)
 
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        field = super(StoryAdmin, self).formfield_for_dbfield(
-            db_field, **kwargs)
-        if db_field.name == "abstract":
-            field = forms.CharField(
-                widget=Wysihtml5AdminTextareaWidget(attrs={"rows":6}))
-        return field
-        
+    def add_view(self, request, form_url="", extra_context=None):
+        data = request.GET.copy()
+        data['author'] = request.user.id
+        request.GET = data
+        return super(StoryAdmin, self).add_view(request, form_url, extra_context=extra_context)
 
     def has_change_permission(self, request, obj=None):
         if not obj or request.user.is_superuser:

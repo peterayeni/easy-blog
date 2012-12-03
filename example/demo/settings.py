@@ -125,7 +125,6 @@ INSTALLED_APPS = (
     "easy_blog",
     "haystack",
     "south",
-    "wysihtml5",
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -214,6 +213,3 @@ HAYSTACK_CONNECTIONS = {
 }
 
 LOGIN_URL = "/"
-
-WYSIHTML5_CMD_INSERT_IMAGE = "insertInlinePicture"
-WYSIHTML5_FUNC_INSERT_IMAGE_DIALOG = "inline_media.widgets.render_insert_inline_picture_dialog"

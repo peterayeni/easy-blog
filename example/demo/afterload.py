@@ -92,25 +92,8 @@ def fix_tagged_items():
                 ti.content_type = picture_ct
             ti.save()
 
-def do_cache_article_pics():
-    pics_sizes = (
-        ( 2, "250"), # story 11 uses picture  2 with 250px width
-        ( 2, "350"), # story 10 uses picture  4 with 250px width
-        ( 5, "350"), # story  9 uses picture  5 with 350px width
-        ( 6, "250"), # story  8 uses picture  6 with 250px width
-        ( 7, "350"), # story  7 uses picture  7 with 350px width
-        ( 8, "350"), # story  6 uses picture  8 with 350px width
-        ( 9, "350"), # story  5 uses picture  9 with 350px width
-        (10, "350"), # story  4 uses picture 10 with  80px width
-        ( 3, "350"), # story  4 uses picture  3 with 200px width
-    )
-    for picid, size in pics_sizes:
-        pic = Picture.objects.get(pk=picid)
-        get_thumbnail(pic.picture.file, size)
-
 
 if __name__ == '__main__':
     setup_users()
     fix_content_types()
     fix_tagged_items()
-    do_cache_article_pics()
