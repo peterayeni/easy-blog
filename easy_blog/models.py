@@ -160,14 +160,17 @@ class StoryManager(models.Manager):
                 status__in=status, pub_date__lte=now())
 
 
+_htxt = {'markup_text': u'Check <a href="http://markable.in/file/aa191728-9dc7-11e1-91c7-984be164924a/" target=_new">Markdown syntax</a>, <a href="http://docutils.sourceforge.net/docs/user/rst/quickref.html" target=_new">reStructuredText syntax</a>',
+            'site': _("Site in which the entry is published")}
+
 class Story(models.Model):
     """A generic story."""
     title           = models.CharField(max_length=200)
     slug            = models.SlugField(unique_for_date="pub_date")
     markup          = MarkupField(default="markdown")
-    abstract        = TextFieldWithInlines()
+    abstract        = TextFieldWithInlines(help_text=_htxt["markup_text"])
     abstract_markup = models.TextField(editable=True, blank=True, null=True)
-    body            = TextFieldWithInlines()
+    body            = TextFieldWithInlines(help_text=_htxt["markup_text"])
     body_markup     = models.TextField(editable=True, blank=True, null=True)
     tags            = TagField()
     status          = models.IntegerField(choices=STATUS_CHOICES, default=1)
@@ -176,7 +179,7 @@ class Story(models.Model):
     pub_date        = models.DateTimeField(_("Publication date"), default=now)
     mod_date        = models.DateTimeField(_("Modification date"), auto_now=True)
     visits          = models.IntegerField(default=0, editable=False)
-    site            = models.ForeignKey(Site, verbose_name=_("Site in which the entry is published"))
+    site            = models.ForeignKey(Site, help_text=_htxt['site'])
     objects         = StoryManager()
 
     class Meta:

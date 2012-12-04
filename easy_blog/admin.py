@@ -32,7 +32,7 @@ class StoryAdmin(AdminTextFieldWithInlinesMixin, admin.ModelAdmin):
     list_filter   = story_admin_list_filter
     search_fields = ("title", "abstract", "body")
     prepopulated_fields = {"slug": ("title",)}
-    fieldsets = ((None, {"fields": ("title", "slug",
+    fieldsets = ((None, {"fields": ("title", "slug", "markup",
                                     "abstract", "body",)}),
                  ("Post data", {"fields": (("site", "author", "status"), 
                                            ("allow_comments", "tags"),
