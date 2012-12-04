@@ -161,16 +161,51 @@ class StoryManager(models.Manager):
 
 
 _htxt = {'markup_text': u'Check <a href="http://markable.in/file/aa191728-9dc7-11e1-91c7-984be164924a/" target=_new">Markdown syntax</a>, <a href="http://docutils.sourceforge.net/docs/user/rst/quickref.html" target=_new">reStructuredText syntax</a>',
-            'site': _("Site in which the entry is published")}
+         'site': _("Site in which the entry is published"),
+         'hint_on_markdown': _("Look at the body field for a quick Markdown cheatsheet"),
+         'markdown_cheatsheet': u'''
+In case you need to write headers to highlight different sections along the story, you can use headers like the following.
+
+### Header Level 3
+
+This is a paragraph with simple content, not too long and too short, just enough to make it look like a paragraph. **This sentence has a font in bold**. *And this is in italics*. A markdown link looks like this: [Link to Google](http://www.google.com). But use HTML links at will too, specially when you want them to be opened in a different window: <A href="http://www.google.com" target="_new">Google in a new window</a>.
+
+<div style="margin:10px auto;text-align:center">Paste here your youtube or google docs content</div>
+
+This is a regular list:
+
+* The first element of the list
+* The second element of the list
+* The third element of the list
+
+And this a numbered list:
+
+1. The first
+1. The second
+1. The third
+
+Remember, you can separate paragraphs with horizontal rules, by simply typing three asterisks.
+
+***
+
+So this paragraph will be below a horizontal rule.
+
+If you want to quote a text, as when you make a citation, use the following:
+> A small step for man a giant leap for mankind.
+
+Enjoy markdown!
+'''}
 
 class Story(models.Model):
     """A generic story."""
     title           = models.CharField(max_length=200)
     slug            = models.SlugField(unique_for_date="pub_date")
     markup          = MarkupField(default="markdown")
-    abstract        = TextFieldWithInlines(help_text=_htxt["markup_text"])
+    abstract        = TextFieldWithInlines(help_text=_htxt["markup_text"],
+                                           default=_htxt["hint_on_markdown"])
     abstract_markup = models.TextField(editable=True, blank=True, null=True)
-    body            = TextFieldWithInlines(help_text=_htxt["markup_text"])
+    body            = TextFieldWithInlines(help_text=_htxt["markup_text"],
+                                           default=_htxt["markdown_cheatsheet"])
     body_markup     = models.TextField(editable=True, blank=True, null=True)
     tags            = TagField()
     status          = models.IntegerField(choices=STATUS_CHOICES, default=1)
