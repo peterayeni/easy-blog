@@ -3,7 +3,13 @@
 <form id="CF" action="{% comment_form_target %}" method="post" class="vbox box-pack-center box-align-stretch">{% csrf_token %}
   <input type="hidden" name="next" value="{% url 'comments-xtd-sent' %}" />
   {% if form.errors %}
-  <div class="alert alert-error"><strong>{% blocktrans count form.errors|length as counter %}Please correct the error below{% plural %}Please correct the errors below{% endblocktrans %}</strong></div>
+  <div class="alert alert-error"><strong>
+    {% if form.errors|length == 1 %}
+    {% blocktrans %}Please correct the error below{% endblocktrans %}
+    {% else %}
+    {% blocktrans %}Please correct the errors below{% endblocktrans %}
+    {% endif %}
+  </strong></div>
   {% endif %}
   
   {% for field in form %}
