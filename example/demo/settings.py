@@ -213,3 +213,10 @@ HAYSTACK_CONNECTIONS = {
 }
 
 LOGIN_URL = "/"
+
+INLINE_MEDIA_TEXTAREA_ATTRS = {
+    'default': { # default widget attributes, can be overriden on
+                 # a per app_label.model basis
+        'style': 'font: 12px monospace'
+    },
+}
