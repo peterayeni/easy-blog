@@ -1,17 +1,12 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.syndication.views import Feed, FeedDoesNotExist
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.comments.models import Comment
 from django.core.urlresolvers import reverse
 
 from inline_media.parser import inlines
 from tagging.models import Tag, TaggedItem
 
 from easy_blog.models import Config, Story
-
-
-ct_story = ContentType.objects.get(app_label="easy_blog", model="story")
-
 
 class LatestStoriesFeed(Feed):
     _config = None
@@ -67,9 +62,6 @@ class PostsByTag(Feed):
     def title(self, obj):
         return ur'''%s posts tagged as '%s' feed''' % (self.config.title, obj.name)
 
-    def description(self):
-        return ur'''%s latest posts tagged as '%s' feed.''' % (self.config.title, obj.name)
-
     def link(self, obj):
         if not obj:
             raise FeedDoesNotExist
@@ -84,6 +76,7 @@ class PostsByTag(Feed):
         return "Posts tagged as %s" % obj.name
     
     def items(self, obj):
+        ct_story = ContentType.objects.get(app_label="easy_blog", model="story")
         return TaggedItem.objects.filter(
             tag__name__iexact=obj.name,
             content_type__in=[ct_story,]).order_by("-id")[:10]
