@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 
 from django.conf import settings
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.comments.feeds import LatestCommentFeed
 from django.views.generic import DetailView, ListView, TemplateView
