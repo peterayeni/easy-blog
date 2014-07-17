@@ -2,19 +2,15 @@
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
 from django.db.models import F, Q
 from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import render_to_response as render
-from django.template import RequestContext
 try:
     from django.utils.timezone import now
 except ImportError:
     from easy_blog.utils import now
 from django.utils.translation import ugettext as _
-from django.views.generic import View, ListView, DateDetailView, RedirectView
-from django.views.generic.dates import (_date_from_string, _date_lookup_for_field,
-                                        YearArchiveView, MonthArchiveView, DayArchiveView)
+from django.views.generic import ListView, DateDetailView
+from django.views.generic.dates import YearArchiveView, MonthArchiveView, DayArchiveView
 from django.views.generic.list import MultipleObjectMixin
 
 from tagging.models import Tag, TaggedItem
@@ -39,7 +35,7 @@ class HomepageView(ListView):
             kwargs = {"author": None, "status": [3]}
         stories = Story.objects.select(**kwargs).order_by("-pub_date")
         return stories
-    
+
 
 @login_required(redirect_field_name="")
 def show_unpublished(request):
@@ -57,7 +53,7 @@ def hide_unpublished(request):
 class StoryDetailView(DateDetailView):
     def get_queryset(self):
         return self.model.objects.published()
-        
+
     def get_object(self, *args, **kwargs):
         qs = super(DateDetailView, self).get_object(*args, **kwargs)
         if qs.status > 2 and not qs.in_the_future:

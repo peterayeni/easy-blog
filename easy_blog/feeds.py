@@ -10,7 +10,7 @@ from easy_blog.models import Config, Story
 
 class LatestStoriesFeed(Feed):
     _config = None
-    
+
     @property
     def config(self):
         if self._config is None:
@@ -30,7 +30,7 @@ class LatestStoriesFeed(Feed):
         return inlines(item.body)
 
     def item_author_name(self, item):
-        return item.author.get_full_name()       
+        return item.author.get_full_name()
 
     def title(self):
         return '%s stories feed' % self.config.title
@@ -47,7 +47,7 @@ class LatestStoriesFeed(Feed):
 
 class PostsByTag(Feed):
     _config = None
-    
+
     @property
     def config(self):
         if self._config is None:
@@ -74,7 +74,7 @@ class PostsByTag(Feed):
 
     def description(self, obj):
         return "Posts tagged as %s" % obj.name
-    
+
     def items(self, obj):
         ct_story = ContentType.objects.get(app_label="easy_blog", model="story")
         return TaggedItem.objects.filter(
@@ -94,4 +94,4 @@ class PostsByTag(Feed):
         return inlines(item.object.body)
 
     def item_author_name(self, item):
-        return item.object.author.get_full_name()       
+        return item.object.author.get_full_name()
