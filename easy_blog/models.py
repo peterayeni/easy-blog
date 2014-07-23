@@ -1,24 +1,19 @@
 #-*- coding: utf-8 -*-
 
-import os.path
-
 from django.db import models
 from django.db.models import permalink, Q
 from django.db.models.signals import post_delete
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.sitemaps import ping_google
 from django.contrib.sites.models import Site
 from django.core.cache import cache
-from django.utils.encoding import force_unicode
 from django.utils.safestring import mark_safe
-from django.utils.text import truncate_words
 try:
     from django.utils.timezone import now
 except ImportError:
     from easy_blog.utils import now
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from django_markup.fields import MarkupField
 from django_markup.markup import formatter
@@ -28,7 +23,7 @@ from tagging.fields import TagField
 from tagging.models import TaggedItem
 from tagging.utils import get_tag_list
 
-from easy_blog.utils import create_cache_key, colloquial_date
+from easy_blog.utils import create_cache_key
 
 
 class DefaultConfig(object):
@@ -39,11 +34,11 @@ class DefaultConfig(object):
             return self.data[name]
         except KeyError:
             return None
-        
+
 
 default_config = DefaultConfig(
     getattr(
-        settings, "EASY_BLOG_DEFAULT_CONFIG", 
+        settings, "EASY_BLOG_DEFAULT_CONFIG",
         { "site": 1,
           "title": u"Your Easy Blog",
           "stories_in_index": 5,
@@ -55,7 +50,7 @@ default_config = DefaultConfig(
           "meta_author": u"",
           "meta_keywords": u"",
           "meta_description": u""}))
-                               
+
 
 STATUS_CHOICES = ((1, _("Draft")), (2, _("Review")), (3, _("Public")),)
 
@@ -70,7 +65,7 @@ class Config(models.Model):
             "List of stories in the front page."))
     comments_in_index = models.IntegerField(default=5, help_text=_(
             "List of last comments in the front page."))
-    email_subscribe_url = models.URLField(_("subscribe via email url"), 
+    email_subscribe_url = models.URLField(_("subscribe via email url"),
                                           blank=True, null=True)
     show_author = models.BooleanField(default=False, help_text=_(
             "Show author's full name along in posts"))
@@ -85,7 +80,7 @@ class Config(models.Model):
             "List of keywords to help improve quality of search results"))
     meta_description = models.TextField(blank=True, help_text=_(
             "What the blog is about, topics, editorial line..."))
-    
+
     class Meta:
         db_table = "easy_blog_config"
         verbose_name = _("app config")
@@ -101,14 +96,14 @@ class Config(models.Model):
     def save(self, *args, **kwargs):
         super(Config, self).save(*args, **kwargs)
         self.site_name = self.site.name
-        key = create_cache_key(Config, field="site__id", 
+        key = create_cache_key(Config, field="site__id",
                                field_value=self.site.id)
         cache.set(key, self)
 
     @staticmethod
     def get_current():
         site = Site.objects.get_current()
-        key = create_cache_key(Config, field="site__id", 
+        key = create_cache_key(Config, field="site__id",
                                field_value=site.id)
         config = cache.get(key, None)
         if config is None:
@@ -122,7 +117,7 @@ class Config(models.Model):
 
 class StoryManager(models.Manager):
     """Returns published posts that are not in the future."""
-    
+
     def drafts(self, author=None):
         if not author:
             return self.get_query_set().filter(
@@ -242,7 +237,7 @@ class Story(models.Model):
         super(Story, self).save(*args, **kwargs)
         if self.status == 3: # public
             blog_config = Config.get_current()
-            ping_google = getattr(blog_config, "ping_google", False) 
+            ping_google = getattr(blog_config, "ping_google", False)
             if ping_google:
                 try:
                     ping_google()

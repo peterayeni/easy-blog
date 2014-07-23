@@ -2,11 +2,9 @@
 
 from django.conf import settings
 from django.conf.urls import *
-from django.contrib.auth.decorators import login_required
 from django.contrib.comments.feeds import LatestCommentFeed
-from django.views.generic import DetailView, ListView, TemplateView
+from django.views.generic import ListView, TemplateView
 
-from tagging.models import Tag
 from django_comments_xtd.models import XtdComment
 
 from easy_blog import views
@@ -21,7 +19,7 @@ search_url_active = getattr(settings, "EASY_BLOG_SEARCH_URL_ACTIVE", True)
 urlpatterns = patterns("",
     url(r"^$", views.HomepageView.as_view(), name="blog-index"),
     url(r"^stories/", include("easy_blog.story_urls")),
- 
+
     url(r"^tags$",
         TemplateView.as_view(template_name="easy_blog/tag_list.html"),
         name="blog-tag-list"),
@@ -30,9 +28,9 @@ urlpatterns = patterns("",
         views.TagDetailView.as_view(),
         name="blog-tag-detail"),
 
-    url(r"^comments$", 
+    url(r"^comments$",
         ListView.as_view(
-            queryset=XtdComment.objects.for_app_models("easy_blog.story"), 
+            queryset=XtdComment.objects.for_app_models("easy_blog.story"),
             template_name="easy_blog/comment_list.html",
             paginate_by=page_size),
         name="blog-comment-list"),
@@ -68,10 +66,10 @@ if search_url_active:
     from haystack.views import SearchView, search_view_factory
 
     urlpatterns += patterns("",
-        url(r'^search$', 
-            search_view_factory(view_class=SearchView, 
+        url(r'^search$',
+            search_view_factory(view_class=SearchView,
                                 form_class=SearchForm,
-                                results_per_page=page_size), 
+                                results_per_page=page_size),
             name='haystack-search'),
     )
 #------------------------------------------------------------------------------
