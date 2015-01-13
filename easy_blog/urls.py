@@ -14,7 +14,7 @@ from easy_blog.sitemaps import StoriesSitemap
 
 page_size = getattr(settings, "EASY_BLOG_PAGINATE_BY", 10)
 ui_columns = getattr(settings, "EASY_BLOG_UI_COLUMNS", 3)
-search_url_active = getattr(settings, "EASY_BLOG_SEARCH_URL_ACTIVE", True)
+search_url_active = getattr(settings, "EASY_BLOG_SEARCH_URL_ACTIVE", False)
 
 urlpatterns = patterns("",
     url(r"^$", views.HomepageView.as_view(), name="blog-index"),
