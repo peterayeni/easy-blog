@@ -113,7 +113,7 @@ INSTALLED_APPS = (
     "django.contrib.sitemaps",
     'django.contrib.messages',
     "django.contrib.staticfiles",
-    "django.contrib.comments",
+    "django_comments",
     "django.contrib.admin",
 
     "django_comments_xtd",
