@@ -60,7 +60,7 @@ It is assumed you have pip_ installed and virtualenv_. Although virtualenv_ is n
 2. Add the following entries to ``INSTALLED_APPS`` in your ``settings.py`` file::
 
     'django.contrib.staticfiles', 
-    'django.contrib.comments',
+    'django_comments',
     'django_comments_xtd', 
     'django_markup', 
     'inline_media', 

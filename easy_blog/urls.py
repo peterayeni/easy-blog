@@ -2,7 +2,7 @@
 
 from django.conf import settings
 from django.conf.urls import *
-from django.contrib.comments.feeds import LatestCommentFeed
+from django_comments.feeds import LatestCommentFeed
 from django.views.generic import ListView, TemplateView
 
 from django_comments_xtd.models import XtdComment

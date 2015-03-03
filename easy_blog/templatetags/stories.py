@@ -10,7 +10,10 @@ except ImportError:
 
 import re
 
-Story = models.get_model('easy_blog', 'story')
+try:
+    Story = models.get_model('easy_blog', 'story')
+except LookupError:
+    Story = None
 
 register = template.Library()
 

@@ -81,7 +81,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.sitemaps",
     'django.contrib.messages',
-    "django.contrib.comments",
+    "django_comments",
 
     "django_comments_xtd",
     "django_markup",

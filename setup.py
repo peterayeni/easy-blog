@@ -32,4 +32,7 @@ setup(
     ],
     include_package_data = True,
     test_suite = "dummy",
+    install_requires = [
+        'django-contrib-comments>=1.5',
+    ]
 )

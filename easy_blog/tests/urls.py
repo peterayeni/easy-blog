@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 
-from django.contrib.comments.feeds import LatestCommentFeed
+from django_comments.feeds import LatestCommentFeed
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from easy_blog.sitemaps import StoriesSitemap
