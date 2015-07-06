@@ -120,39 +120,39 @@ class StoryManager(models.Manager):
 
     def drafts(self, author=None):
         if not author:
-            return self.get_query_set().filter(
+            return self.get_queryset().filter(
                 status=1).order_by("-mod_date")
         else:
-            return self.get_query_set().filter(
+            return self.get_queryset().filter(
                 status=1, author=author).order_by("-mod_date")
 
     def reviews(self, author):
         if author.has_perm("easy_blog.can_review_posts"):
-            return self.get_query_set().filter(status=2).order_by("-mod_date")
+            return self.get_queryset().filter(status=2).order_by("-mod_date")
         else:
             return []
 
     def upcoming(self, author=None):
         if not author:
-            return self.get_query_set().filter(
+            return self.get_queryset().filter(
                 status=3, pub_date__gt=now()).order_by("-mod_date")
         else:
-            return self.get_query_set().filter(
+            return self.get_queryset().filter(
                 status=3, author=author, pub_date__gt=now()).order_by("-mod_date")
 
     def published(self):
-        return self.get_query_set().filter(status=3, pub_date__lte=now())
+        return self.get_queryset().filter(status=3, pub_date__lte=now())
 
     def select(self, status=[3], author=None):
         if min(status) < 3 and author: # show drafts anf reviews for the author
-            qs = self.get_query_set().filter(
+            qs = self.get_queryset().filter(
                 status__in=status).exclude(~Q(author=author), status=1)
             if not author.has_perm("dress_blog.can_review_posts"):
                 return qs.exclude(~Q(author=author), status=2)
             else:
                 return qs
         else:
-            return self.get_query_set().filter(
+            return self.get_queryset().filter(
                 status__in=status, pub_date__lte=now())
 
 
